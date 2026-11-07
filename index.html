@@ -487,10 +487,9 @@ footer{text-align:center;padding:2rem 6% 6rem;color:var(--muted);font-size:.85re
   .ods-title{font-size:.72rem}
 }
 
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .reveal{opacity:1;transform:none}
-}
+/* Las animaciones se muestran siempre, aunque el sistema tenga activado "reducir movimiento".
+   Solo se desactiva el desplazamiento suave. */
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
@@ -818,7 +817,7 @@ const ODS={
 };
 const odsModal=document.getElementById('ods-modal'), odsDialog=document.getElementById('ods-dialog');
 let odsTile=null, odsBusy=false;
-const reduceMotion=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduceMotion=()=>false;
 function flipFrom(tile){
   const t=tile.getBoundingClientRect(), r=odsDialog.getBoundingClientRect();
   return `translate(${t.left-r.left}px,${t.top-r.top}px) scale(${t.width/r.width},${t.height/r.height})`;
@@ -1273,7 +1272,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&widget.classList.co
 document.getElementById('nav-move').addEventListener('click',()=>widget.classList.contains('open')?closeWidget():runThenOpen());
 function runThenOpen(){
   if(widget.classList.contains('open')) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){openWidget();return;}
   fab.classList.remove('show');
   const r=document.getElementById('runner-cross'); r.classList.remove('go'); void r.offsetWidth; r.classList.add('go');
   const dt=setInterval(()=>{const d=document.createElement('div');d.className='dust';d.style.left=(r.getBoundingClientRect().left+10)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),700);},180);
